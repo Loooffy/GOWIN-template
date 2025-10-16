@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 虛擬環境
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 測試
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# 日誌
+*.log
+logs/*.log
+
+# 資料庫
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+
+# 配置檔案（保留範例）
+.env
+!.env.example
+
+# Docker
+.dockerignore
+
+# 其他
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db

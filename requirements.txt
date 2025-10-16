@@ -1,0 +1,13 @@
+# 核心依賴
+arxiv>=2.0.0
+redis>=5.0.0
+pydantic>=2.0.0
+pyyaml>=6.0
+requests>=2.31.0
+
+# 開發依賴（可選）
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
+# black>=23.0.0
+# ruff>=0.1.0
+# mypy>=1.0.0

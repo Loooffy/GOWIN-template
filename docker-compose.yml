@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # Redis 服務（可選，用於狀態追蹤去重）
+  # 如不需要可註解此服務並在 crawler 中移除 depends_on
+  redis:
+    image: redis:7-alpine
+    container_name: crawler-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # 爬蟲服務（需要主機上運行 Ollama 服務）
+  crawler:
+    build: .
+    container_name: crawler-app
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      # 資料庫配置
+      - DATABASE_TYPE=sqlite
+      - DATABASE_PATH=/app/data/crawler.db
+
+      # Redis 配置（可選，連接到 Docker 網路中的 redis 服務）
+      # 如不使用 Redis，設為空值或移除此行
+      - REDIS_URL=redis://redis:6380/0
+
+      # Ollama 配置（必須，訪問主機上的 Ollama 服務）
+      # 請確保主機上 Ollama 服務正在運行
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=gemma3:12b
+      - OLLAMA_TIMEOUT=30
+
+      # 日誌配置
+      - LOG_LEVEL=INFO
+      - LOG_FILE=/app/logs/crawler.log
+    volumes:
+      # 持久化資料
+      - ./data:/app/data
+      - ./logs:/app/logs
+
+      # 掛載配置檔案（方便修改）
+      - ./config.yaml:/app/config.yaml:ro
+
+      # 開發模式：掛載原始碼（可選，用於開發時熱重載）
+      # - ./src:/app/src:ro
+    extra_hosts:
+      # 允許容器訪問主機上的 Ollama 服務（必須）
+      - "host.docker.internal:host-gateway"
+    restart: "no"  # 單次執行後不自動重啟
+
+volumes:
+  redis_data:
+    driver: local
+
+# 網路配置（可選）
+networks:
+  default:
+    name: crawler-network

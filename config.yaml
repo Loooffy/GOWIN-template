@@ -1,0 +1,95 @@
+# 通用爬蟲服務配置檔案
+
+# ========================================
+# 資料庫配置
+# ========================================
+database:
+  type: "sqlite"  # 支援: sqlite, postgresql, mysql
+  path: "./data/crawler.db"  # SQLite 資料庫路徑
+
+  # PostgreSQL/MySQL 配置範例（取消註解以使用）
+  # host: "localhost"
+  # port: 5432  # PostgreSQL 預設 5432, MySQL 預設 3306
+  # database: "crawler_db"
+  # username: "crawler_user"
+  # password: "your_password"
+
+# ========================================
+# Ollama LLM 配置（必須，用於內容篩選）
+# ========================================
+ollama:
+  api_url: "http://localhost:11434"
+  # 在 Docker 環境中訪問主機 Ollama: http://host.docker.internal:11434
+  model: "llama3"
+  timeout: 30  # API 超時時間（秒）
+
+# ========================================
+# Redis 配置（可選，用於狀態追蹤與去重）
+# 如不使用 Redis，可註解此區塊並在執行時使用 --no-redis 選項
+# ========================================
+redis:
+  url: "redis://localhost:6379/0"
+  # 在 Docker 環境中使用: redis://redis:6379/0
+
+# ========================================
+# 日誌配置
+# ========================================
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "./logs/crawler.log"  # 日誌檔案路徑
+  max_bytes: 5242880  # 5MB - 單個日誌檔案最大大小
+  backup_count: 5  # 保留的歷史日誌檔案數量
+
+# ========================================
+# 資料源配置
+# ========================================
+sources:
+  # Arxiv 論文爬蟲範例
+  - name: "arxiv_ai_papers"
+    enabled: true  # 是否啟用此資料源
+    connector_class: "ArxivConnector"  # 連接器類別名稱
+    processor_class: "OllamaFilterProcessor"  # 處理器類別名稱（可選）
+
+    # 連接器配置
+    config:
+      query: "cat:cs.AI OR cat:cs.LG"  # Arxiv 搜尋查詢
+      max_results: 100  # 最大結果數（1-1000）
+      sort_by: "submittedDate"  # 排序依據: submittedDate, lastUpdatedDate, relevance
+      sort_order: "descending"  # 排序順序: descending, ascending
+      start_date: "2025-01-01"  # 開始日期（ISO 格式，可選）
+      # end_date: "2024-12-31"  # 結束日期（ISO 格式，可選）
+
+    # 處理器配置
+    processor_config:
+      filter_prompt: |
+        please judge the following paper is relevant to "llm based NPC in game" or not.
+        please provide your judgment (valid: true/false) and a brief reason (reason).
+
+      relevance_threshold: 0.7  # 相關性閾值（保留以供未來使用）
+
+  # 其他資料源範例（已停用）
+  # - name: "arxiv_nlp_papers"
+  #   enabled: false
+  #   connector_class: "ArxivConnector"
+  #   processor_class: null  # 不使用處理器，直接儲存
+  #   config:
+  #     query: "cat:cs.CL"
+  #     max_results: 50
+  #     sort_by: "submittedDate"
+  #     sort_order: "descending"
+
+# ========================================
+# 進階選項（可選）
+# ========================================
+# advanced:
+#   # 並行處理設定
+#   max_workers: 5  # 最大並行工作數
+#
+#   # 速率限制
+#   rate_limit:
+#     requests_per_minute: 60
+#
+#   # 重試策略
+#   retry:
+#     max_attempts: 3
+#     backoff_factor: 2  # 指數退避因子
