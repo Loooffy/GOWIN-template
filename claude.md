@@ -241,7 +241,7 @@ LOG_LEVEL=INFO
 import importlib
 import logging
 from typing import List, Dict, Any, Optional
-from src.lib.abstract import DataSourceConnector, DataProcessor, DatabaseRepository
+from src.core.abstract import DataSourceConnector, DataProcessor, DatabaseRepository
 from src.config.config import load_config
 
 logger = logging.getLogger(__name__)
@@ -362,7 +362,7 @@ class CrawlerController:
 import arxiv
 from datetime import datetime
 from typing import List, Dict, Any
-from src.lib.abstract import DataSourceConnector
+from src.core.abstract import DataSourceConnector
 
 
 class ArxivConnector(DataSourceConnector):
@@ -414,7 +414,7 @@ class ArxivConnector(DataSourceConnector):
 import requests
 import logging
 from typing import Dict, Any
-from src.lib.abstract import DataProcessor
+from src.core.abstract import DataProcessor
 
 logger = logging.getLogger(__name__)
 
@@ -491,7 +491,7 @@ class OllamaFilterProcessor(DataProcessor):
 ```python
 import logging
 from src.workers.controller import CrawlerController
-from src.lib.logger import setup_logging
+from src.core.logger import setup_logging
 
 
 def main():

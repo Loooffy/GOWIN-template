@@ -7,8 +7,8 @@ Ollama 篩選處理器
 import logging
 from typing import Dict, Any
 
-from src.lib.abstract import DataProcessor
-from src.lib.ollama_client import get_ollama_client
+from src.core.abstract import DataProcessor
+from src.core.ollama_client import get_ollama_client
 from src.models.base import FilterResult
 
 logger = logging.getLogger(__name__)

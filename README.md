@@ -1,58 +1,4 @@
-# 通用爬蟲服務模板 GOWIN (Get Only What I Need))
-
-一個高度可配置、模組化的爬蟲服務模板，參考 [spam-blocker](https://github.com/GuangFuHero/spam-blocker) 的架構設計，實現了抽象化、可擴展的資料爬取與處理框架。
-
-## ✨ 特性
-
-- **🔧 高度模組化** - 清晰的分層架構（lib / workers / message_queue）
-- **📝 配置驅動** - 使用 YAML 配置檔案，無需修改程式碼即可調整行為
-- **🔌 可擴展設計** - 基於抽象基礎類別，輕鬆添加新的資料源和處理器
-- **🗄️ 多資料庫支援** - SQLite（開發）/ PostgreSQL（生產）
-- **🤖 LLM 整合** - 內建 Ollama 支援，用於智能內容篩選和分析
-- **🔄 Redis 狀態追蹤** - 可選的高效去重機制，支援增量更新
-- **📊 完整日誌** - RotatingFileHandler，避免日誌檔案過大
-- **🐳 Docker 支援** - 完整的容器化部署方案
-
-## 📁 專案結構
-
-```
-crawler-template/
-├── src/
-│   ├── lib/                          # 核心函式庫層
-│   │   ├── abstract.py               # 抽象基礎類別定義
-│   │   ├── database.py               # 資料庫 ORM 層
-│   │   ├── logger.py                 # 日誌管理
-│   │   └── ollama_client.py          # Ollama LLM 客戶端
-│   │
-│   ├── workers/                      # 業務邏輯層
-│   │   ├── connectors/               # 資料源連接器
-│   │   │   └── arxiv.py              # Arxiv 連接器範例
-│   │   │
-│   │   ├── processors/               # 資料處理器
-│   │   │   └── ollama_filter.py      # Ollama 篩選器範例
-│   │   │
-│   │   └── controller.py             # 核心控制器
-│   │
-│   ├── message_queue/                # 狀態追蹤與佇列
-│   │   └── tracker.py                # Redis 狀態追蹤器
-│   │
-│   ├── config/                       # 配置管理
-│   │   └── config.py                 # 配置載入與驗證
-│   │
-│   ├── models/                       # Pydantic 資料模型
-│   │   ├── base.py                   # 基礎模型
-│   │   └── arxiv.py                  # Arxiv 特定模型
-│   │
-│   └── main.py                       # 程式入口點
-│
-├── config.yaml                       # 配置檔案
-├── .env.example                      # 環境變數範例
-├── pyproject.toml                    # Python 專案配置
-├── requirements.txt                  # 依賴清單
-├── Dockerfile                        # Docker 容器定義
-├── docker-compose.yml                # Docker 服務編排
-└── README.md                         # 本檔案
-```
+# Arxiv 爬蟲服務 GOWIN-arxiv
 
 ## 🚀 快速開始
 
@@ -156,7 +102,7 @@ docker-compose down
 
 ```bash
 # 構建映像
-docker build -t crawler-template .
+docker build -t crawler-arxiv .
 
 # 執行容器
 docker run --rm \
@@ -164,7 +110,7 @@ docker run --rm \
   -v $(pwd)/logs:/app/logs \
   -v $(pwd)/config.yaml:/app/config.yaml:ro \
   --network host \
-  crawler-template
+  crawler-arxiv
 ```
 
 ## ⚙️ 配置說明
@@ -217,7 +163,7 @@ sources:
 2. 繼承 `DataSourceConnector` 並實作必要方法：
 
 ```python
-from src.lib.abstract import DataSourceConnector
+from src.core.abstract import DataSourceConnector
 from typing import List, Dict, Any
 
 class RSSConnector(DataSourceConnector):
@@ -249,7 +195,7 @@ sources:
 2. 繼承 `DataProcessor` 並實作 `process_item` 方法：
 
 ```python
-from src.lib.abstract import DataProcessor
+from src.core.abstract import DataProcessor
 from typing import Dict, Any
 
 class SentimentProcessor(DataProcessor):

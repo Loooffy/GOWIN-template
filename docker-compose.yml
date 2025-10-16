@@ -5,7 +5,7 @@ services:
   # 如不需要可註解此服務並在 crawler 中移除 depends_on
   redis:
     image: redis:7-alpine
-    container_name: crawler-redis
+    container_name: crawler-arxiv-redis
     ports:
       - "6380:6379"
     volumes:
@@ -65,4 +65,4 @@ volumes:
 # 網路配置（可選）
 networks:
   default:
-    name: crawler-network
+    name: crawler-arxiv-network

@@ -11,9 +11,9 @@ from typing import Dict, Any, Optional
 from datetime import datetime
 import time
 
-from src.lib.abstract import DataSourceConnector, DataProcessor, DatabaseRepository
-from src.lib.database import create_database_repository
-from src.lib.ollama_client import get_ollama_client
+from src.core.abstract import DataSourceConnector, DataProcessor, DatabaseRepository
+from src.core.database import create_database_repository
+from src.core.ollama_client import get_ollama_client
 from src.message_queue.tracker import ProcessedRecordTracker
 from src.models.base import ProcessingStats
 

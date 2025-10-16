@@ -9,7 +9,7 @@ import sys
 import argparse
 from pathlib import Path
 
-from src.lib.logger import setup_logging, suppress_noisy_loggers
+from src.core.logger import setup_logging, suppress_noisy_loggers
 from src.config.config import load_config
 from src.workers.controller import CrawlerController
 

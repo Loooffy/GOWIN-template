@@ -9,7 +9,7 @@ from typing import List, Dict, Any
 from datetime import datetime
 import arxiv
 
-from src.lib.abstract import DataSourceConnector
+from src.core.abstract import DataSourceConnector
 from src.models.arxiv import ArxivPaper
 
 logger = logging.getLogger(__name__)
